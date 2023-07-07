@@ -3,7 +3,9 @@
 const Footer = () => {
     return (
         <>
-            Footer
+            <div className="w-full text-center text-red-600 bg-gray-200 p-3">
+                Abhishek Pathak
+            </div>
         </>
     )
 }
