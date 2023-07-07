@@ -70,6 +70,18 @@ const Type = () => {
                     <h1 className="text-xl font-semibold text-center text-purple-700 underline">
                         Add Job Type
                     </h1>
+                    <div className="mb-2">
+                            <label className="mr-5">Select Category</label>
+                            <select value={category} onChange={(e) => { setCategory(e.target.value) }}>
+                                <option defaultChecked>Choose</option>
+                                {
+                                    cato && cato.map((opt) => {
+                                        
+                                        return <option value={opt._id}>{opt.name}</option>
+                                    })
+                                }
+                            </select>
+                        </div>
                     <div className="mt-1">
 
                         <div className="mb-2">
@@ -86,18 +98,7 @@ const Type = () => {
                                 }}
                             />
                         </div>
-                        <div className="mb-2">
-                            <label className="mr-5">Select Category</label>
-                            <select value={category} onChange={(e) => { setCategory(e.target.value) }}>
-                                <option defaultChecked>Choose</option>
-                                {
-                                    cato && cato.map((opt) => {
-                                        
-                                        return <option value={opt._id}>{opt.name}</option>
-                                    })
-                                }
-                            </select>
-                        </div>
+                        
                         <div className="">
                             <button onClick={submitform} className="w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-purple-700 rounded-md hover:bg-purple-600 focus:outline-none focus:bg-purple-600">
                                 Submit data

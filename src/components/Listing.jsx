@@ -16,17 +16,22 @@ const Listing = ({ currentuser }) => {
      */
 
     const [cred, setCred] = useState({
-        title:"",
-        companydetails:{
-            name:"",
-            established:""
-        },
-        description:"",
-        salary:"",
+        title: "",
+        description: "",
+        experiencereq: "",
+        salary: "",
     });
 
+    const [companydetails, setCompanydetails] = useState({
+        name: "",
+        established: ""
+    })
+
     const handleOnChange = (e) => {
-        setUserCred({ ...userCred, [e.target.name]: e.target.value })
+        setCred({ ...cred, [e.target.name]: e.target.value })
+    }
+    const handleOnChange2 = (e) => {
+        setCompanydetails({ ...companydetails, [e.target.name]: e.target.value })
     }
 
     // get all categories first
@@ -35,8 +40,9 @@ const Listing = ({ currentuser }) => {
     const [category, setCategory] = useState(
         ""
     );
-    const [tags, setTags] = useState([]);
-    const [skills, setSkills] = useState([]);
+    const [type, setType] = useState("")
+    const [tagsString, setTagsString] = useState();
+    const [skillsString, setSkillsString] = useState();
 
     async function postData(url = "", data = {}) {
         const response = await fetch(`${URL}${url}`, {
@@ -63,19 +69,29 @@ const Listing = ({ currentuser }) => {
     }
 
     const submitform = async () => {
+        console.log(cred)
+        console.log(tagsString)
+        console.log(skillsString)
         console.log(category)
-        let res = await postData("jobtype", { name, categoryId: category });
+        console.log(type)
+        console.log(companydetails)
+
+        let tags = tagsString.replace(/\s/g, '')
+        let skills = skillsString.replace(/\s/g, '')
+
+        let res = await postData("joblisting", {
+            jobCategoryId: category, jobTypeId: type, title: cred.title, companydetails: companydetails, tags: tags, skills: skills, experiencereq: cred.experiencereq, description: description, salary: salary
+        })
+
         if (res.status == 0) {
-            alert(res.message)
-            return;
+
         } else if (res.status == 1) {
-            alert(res.message);
-            setName("")
-            setCategory("")
+
         }
+
     }
 
-    
+
 
     const getCato = async () => {
         let res = await getData("admincategory")
@@ -110,23 +126,8 @@ const Listing = ({ currentuser }) => {
                         Add Job Listing
                     </h1>
                     <div className="mt-1">
-
-                        <div className="mb-2">
-                            <label
-                                for="email"
-                                className="block text-sm font-semibold text-gray-800"
-                            >
-                                Name
-                            </label>
-                            <input
-                                type="email"
-                                className="block w-full px-4 py-2 mt-2 text-purple-700 bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40" name="email" value={name} onChange={(e) => {
-                                    setName(e.target.value)
-                                }}
-                            />
-                        </div>
-                        <div className="mb-2">
-                            <label className="mr-5">Select Category</label>
+                        <div className="mb-3">
+                            <label className="mr-5 block text-sm font-semibold text-gray-800">Select Category</label>
                             <select value={category} onChange={(e) => { setCategory(e.target.value) }}>
                                 <option defaultChecked>Choose</option>
                                 {
@@ -137,9 +138,9 @@ const Listing = ({ currentuser }) => {
                                 }
                             </select>
                         </div>
-                        <div className="mb-2">
-                            <label className="mr-5">Select Job Type</label>
-                            <select value={category} onChange={(e) => { setCategory(e.target.value) }}>
+                        <div className="mb-5">
+                            <label className="mr-5 block text-sm font-semibold text-gray-800">Select Job Type</label>
+                            <select value={category} onChange={(e) => setType(e.target.value)}>
                                 <option defaultChecked>Choose</option>
                                 {
                                     (types && types.length != 0) && types.map((opt) => {
@@ -149,6 +150,104 @@ const Listing = ({ currentuser }) => {
                                 }
                             </select>
                         </div>
+
+                        <div className="mb-2">
+                            <label
+                                for="title"
+                                className="block text-sm font-semibold text-gray-800"
+                            >
+                                Title
+                            </label>
+                            <input
+                                type="text"
+                                className="block w-full px-4 py-2 mt-2 text-purple-700 bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40" name="title" value={cred.title} onChange={handleOnChange}
+                            />
+                        </div>
+                        <div className="mb-2">
+                            <label
+                                for="companyname"
+                                className="block text-sm font-semibold text-gray-800"
+                            >
+                                Company name
+                            </label>
+                            <input
+                                type="text"
+                                className="block w-full px-4 py-2 mt-2 text-purple-700 bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40" name="name" value={companydetails.name} onChange={handleOnChange2}
+                            />
+                        </div>
+                        <div className="mb-2">
+                            <label
+                                for="companyname"
+                                className="block text-sm font-semibold text-gray-800"
+                            >
+                                Company established date
+                            </label>
+                            <input
+                                type="text"
+                                className="block w-full px-4 py-2 mt-2 text-purple-700 bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40" name="established" value={companydetails.established} onChange={handleOnChange2}
+                            />
+                        </div>
+                        <div className="mb-2">
+                            <label
+                                for="companyname"
+                                className="block text-sm font-semibold text-gray-800"
+                            >
+                                Tags - comma seperated
+                            </label>
+                            <input
+                                type="text"
+                                className="block w-full px-4 py-2 mt-2 text-purple-700 bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40" name="tags" value={tagsString} onChange={(e) => setTagsString(e.target.value)}
+                            />
+                        </div>
+                        <div className="mb-2">
+                            <label
+                                for="companyname"
+                                className="block text-sm font-semibold text-gray-800"
+                            >
+                                Skills - comma seperated
+                            </label>
+                            <input
+                                type="text"
+                                className="block w-full px-4 py-2 mt-2 text-purple-700 bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40" name="skills" value={skillsString} onChange={(e) => setSkillsString(e.target.value)}
+                            />
+                        </div>
+                        <div className="mb-2">
+                            <label
+                                for="companyname"
+                                className="block text-sm font-semibold text-gray-800"
+                            >
+                                Experience Required
+                            </label>
+                            <input
+                                type="text"
+                                className="block w-full px-4 py-2 mt-2 text-purple-700 bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40" name="experiencereq" value={cred.experiencereq} onChange={handleOnChange}
+                            />
+                        </div>
+                        <div className="mb-2">
+                            <label
+                                for="companyname"
+                                className="block text-sm font-semibold text-gray-800"
+                            >
+                                Description
+                            </label>
+                            <input
+                                type="text"
+                                className="block w-full px-4 py-2 mt-2 text-purple-700 bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40" name="description" value={cred.description} onChange={handleOnChange}
+                            />
+                        </div>
+                        <div className="mb-2">
+                            <label
+                                for="companyname"
+                                className="block text-sm font-semibold text-gray-800"
+                            >
+                                Salary
+                            </label>
+                            <input
+                                type="text"
+                                className="block w-full px-4 py-2 mt-2 text-purple-700 bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40" name="salary" value={cred.salary} onChange={handleOnChange}
+                            />
+                        </div>
+
                         <div className="">
                             <button onClick={submitform} className="w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-purple-700 rounded-md hover:bg-purple-600 focus:outline-none focus:bg-purple-600">
                                 Submit data
