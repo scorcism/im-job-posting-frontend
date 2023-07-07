@@ -69,29 +69,20 @@ const Listing = ({ currentuser }) => {
     }
 
     const submitform = async () => {
-        console.log(cred)
-        console.log(tagsString)
-        console.log(skillsString)
-        console.log(category)
-        console.log(type)
-        console.log(companydetails)
 
         let tags = tagsString.replace(/\s/g, '')
         let skills = skillsString.replace(/\s/g, '')
 
         let res = await postData("joblisting", {
-            jobCategoryId: category, jobTypeId: type, title: cred.title, companydetails: companydetails, tags: tags, skills: skills, experiencereq: cred.experiencereq, description: description, salary: salary
+            jobCategoryId: category, jobTypeId: type, title: cred.title, companydetails: companydetails, tags: tags, skills: skills, experiencereq: cred.experiencereq, description: cred.description, salary: cred.salary
         })
 
         if (res.status == 0) {
-
+            alert(res.message)
         } else if (res.status == 1) {
-
+            alert(res.message)
         }
-
     }
-
-
 
     const getCato = async () => {
         let res = await getData("admincategory")
